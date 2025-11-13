@@ -39,6 +39,11 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('drawing', data);
   });
 
+  // Handle clear canvas
+  socket.on('clearCanvas', () => {
+    io.emit('clearCanvas'); // Broadcast to all clients
+  });
+
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
   });
