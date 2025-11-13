@@ -8,6 +8,7 @@ body {
   font-family: 'Inter', sans-serif;
   background-color: #111827; /* theme.colors.background */
   color: #E5E7EB; /* theme.colors.text.DEFAULT */
+  margin: 0;
 }
 
 .prose {

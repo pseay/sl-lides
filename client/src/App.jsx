@@ -33,12 +33,12 @@ function App() {
   };
 
   const PresenterLayout = () => (
-    <div className="min-h-screen">
-      <header className="p-4 bg-surface border-b border-border">
+    <div className="h-screen flex flex-col">
+      <header className="p-4 bg-surface border-b border-border flex-shrink-0">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <h1 className="text-xl font-bold text-text-default">Sling Slides</h1>
-          <Link 
-            to="/presentation" 
+          <Link
+            to="/presentation"
             target="_blank"
             className="px-4 py-2 rounded-md text-sm font-medium transition-colors bg-primary text-white hover:bg-primary-hover"
           >
@@ -46,13 +46,15 @@ function App() {
           </Link>
         </div>
       </header>
-      <main className="p-4 sm:p-6 lg:p-8">
-        <PresenterView
-          slides={slides}
-          currentSlide={currentSlide}
-          onSlideChange={handleSlideChange}
-          socket={socket}
-        />
+      <main className="flex-grow overflow-y-auto">
+        <div className="p-4 sm:p-6 lg:p-8">
+          <PresenterView
+            slides={slides}
+            currentSlide={currentSlide}
+            onSlideChange={handleSlideChange}
+            socket={socket}
+          />
+        </div>
       </main>
     </div>
   );
