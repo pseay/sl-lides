@@ -65,6 +65,7 @@ function App() {
           slides={slides}
           currentSlide={currentSlide}
           socket={socket}
+          key={currentSlide}
         />
       } />
     </Routes>

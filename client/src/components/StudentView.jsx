@@ -6,11 +6,14 @@ export const StudentView = ({ slides, currentSlide, socket }) => {
 
   // This component now renders the slide content directly without any chrome
   return (
-    <>
+    <div className="p-4 sm:p-6 lg:p-8"> {/* Add back some padding for the overall view */}
       {slide.type === 'content' && (
-        <div className="prose prose-invert max-w-none text-text p-8 sm:p-12">
-          {slide.content}
-        </div>
+        <>
+          <h2 className="text-3xl font-bold mb-4">{slide.title}</h2> {/* Re-add title */}
+          <div className="prose prose-invert max-w-none text-text">
+            {slide.content}
+          </div>
+        </>
       )}
 
       {slide.type === 'code' && (
@@ -19,9 +22,9 @@ export const StudentView = ({ slides, currentSlide, socket }) => {
           slideId={currentSlide}
           socket={socket}
           isPresenter={false}
-          showTitle={false}
+          // showTitle prop is now omitted, defaulting to true
         />
       )}
-    </>
+    </div>
   );
 };

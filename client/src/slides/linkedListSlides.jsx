@@ -65,20 +65,12 @@ const slides = [
 
   {
     type: 'code',
-    title: 'Starter Template',
+    title: 'Live Coding: insert()',
     language: 'cpp',
     initialCode: `void insert(StringNode*& front, int index, string value) {
     // TODO: your code here
 }`,
-    description: 'Fill in the body so it satisfies the spec.',
-    showOutput: false
-  },
-
-  {
-    type: 'code',
-    title: 'Live Solution',
-    language: 'cpp',
-    initialCode: `void insert(StringNode*& front, int index, string value) {
+    solution: `void insert(StringNode*& front, int index, string value) {
     if (index == 0) {
         front = new StringNode{value, front};   // new head
     } else {
@@ -88,7 +80,7 @@ const slides = [
         curr->next = new StringNode{value, curr->next};
     }
 }`,
-    description: 'Walk through line-by-line with the class.',
+    description: 'Presenter sees the solution, but can control what the student sees and types live.',
     showOutput: false
   },
 
