@@ -1,5 +1,6 @@
 import React from 'react';
 import { CodeSlide } from './CodeSlide';
+import WhiteboardSlide from './WhiteboardSlide';
 
 export const SlideContent = ({ slide, slideId, socket, isPresenter }) => {
   if (!slide) return null;
@@ -19,6 +20,13 @@ export const SlideContent = ({ slide, slideId, socket, isPresenter }) => {
         <CodeSlide
           slide={slide}
           slideId={slideId}
+          socket={socket}
+          isPresenter={isPresenter}
+        />
+      )}
+
+      {slide.type === 'whiteboard' && (
+        <WhiteboardSlide
           socket={socket}
           isPresenter={isPresenter}
         />

@@ -34,6 +34,11 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('codeUpdate', { [slideId]: code });
   });
 
+  // Handle whiteboard drawing
+  socket.on('drawing', (data) => {
+    socket.broadcast.emit('drawing', data);
+  });
+
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
   });

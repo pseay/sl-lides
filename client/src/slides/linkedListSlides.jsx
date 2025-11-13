@@ -117,6 +117,11 @@ const slides = [
   },
 
   {
+    type: 'whiteboard',
+    title: 'Live Whiteboard',
+  },
+
+  {
     type: 'content',
     title: 'Questions?',
     content: <p className="text-2xl">Ready for Q&A / next exercise!</p>
