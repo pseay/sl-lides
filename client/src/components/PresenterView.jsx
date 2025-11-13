@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
+import Editor from '@monaco-editor/react';
 import { SlideDeck } from './SlideDeck';
-import { CodeSlide } from './CodeSlide';
+import { SlideContent } from './SlideContent';
 
 export const PresenterView = ({ slides, currentSlide, onSlideChange, socket }) => {
   const slide = slides[currentSlide];
@@ -31,28 +32,39 @@ export const PresenterView = ({ slides, currentSlide, onSlideChange, socket }) =
   }, [currentSlide, slides.length, onSlideChange]);
 
   return (
-    <SlideDeck
-      slides={slides}
-      currentSlide={currentSlide}
-      onSlideChange={onSlideChange}
-    >
-      {slide.type === 'content' && (
-        <div>
-          <h2 className="text-3xl font-bold mb-6">{slide.title}</h2>
-          <div className="prose prose-invert max-w-none">
-            {slide.content}
-          </div>
-        </div>
-      )}
-
-      {slide.type === 'code' && (
-        <CodeSlide
+    <>
+      <SlideDeck
+        slides={slides}
+        currentSlide={currentSlide}
+        onSlideChange={onSlideChange}
+      >
+        <SlideContent
           slide={slide}
           slideId={currentSlide}
           socket={socket}
           isPresenter={true}
         />
+      </SlideDeck>
+
+      {slide.solution && (
+        <div className="max-w-7xl mx-auto mt-8">
+          <h2 className="text-2xl font-bold mb-4 text-blue-400">Solution</h2>
+          <div className="border border-border rounded-md overflow-hidden h-[400px]">
+            <Editor
+              height="100%"
+              language={slide.language || 'javascript'}
+              value={slide.solution}
+              theme="vs-dark"
+              options={{ 
+                readOnly: true,
+                minimap: { enabled: false },
+                fontSize: 14,
+                wordWrap: 'on',
+              }}
+            />
+          </div>
+        </div>
       )}
-    </SlideDeck>
+    </>
   );
 };
