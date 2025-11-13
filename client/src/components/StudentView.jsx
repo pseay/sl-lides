@@ -1,18 +1,15 @@
 import React from 'react';
-import { SlideContainer } from './SlideContainer';
 import { CodeSlide } from './CodeSlide';
 
 export const StudentView = ({ slides, currentSlide, socket }) => {
   const slide = slides[currentSlide];
 
+  // This component now renders the slide content directly without any chrome
   return (
-    <SlideContainer>
+    <>
       {slide.type === 'content' && (
-        <div>
-          <h2 className="text-3xl font-bold mb-6">{slide.title}</h2>
-          <div className="prose prose-invert max-w-none text-text">
-            {slide.content}
-          </div>
+        <div className="prose prose-invert max-w-none text-text p-8 sm:p-12">
+          {slide.content}
         </div>
       )}
 
@@ -22,8 +19,9 @@ export const StudentView = ({ slides, currentSlide, socket }) => {
           slideId={currentSlide}
           socket={socket}
           isPresenter={false}
+          showTitle={false}
         />
       )}
-    </SlideContainer>
+    </>
   );
 };

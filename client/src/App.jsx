@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Routes, Route, Link } from 'react-router-dom';
 import io from 'socket.io-client';
 import { PresenterView } from './components/PresenterView';
 import { StudentView } from './components/StudentView';
@@ -7,15 +8,23 @@ import slides from './slides/linkedListSlides';
 const socket = io('http://localhost:3001');
 
 function App() {
-  const [isPresenter, setIsPresenter] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
+    // Listen for slide changes from the server
     socket.on('slideChange', (index) => {
       setCurrentSlide(index);
     });
 
-    return () => socket.off('slideChange');
+    // Request initial state on connect
+    socket.on('connect', () => {
+      // This could be an explicit event from the server if needed
+    });
+
+    return () => {
+      socket.off('slideChange');
+      socket.off('connect');
+    };
   }, []);
 
   const handleSlideChange = (index) => {
@@ -23,43 +32,42 @@ function App() {
     socket.emit('changeSlide', index);
   };
 
-  return (
+  const PresenterLayout = () => (
     <div className="min-h-screen">
       <header className="p-4 bg-surface border-b border-border">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <h1 className="text-xl font-bold text-text-default">Sling Slides</h1>
-          <button
-            onClick={() => setIsPresenter(!isPresenter)}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-              isPresenter 
-                ? 'bg-primary text-white hover:bg-primary-hover' 
-                : 'bg-surface text-text-secondary hover:text-text-default'
-            }`}
+          <Link 
+            to="/presentation" 
+            target="_blank"
+            className="px-4 py-2 rounded-md text-sm font-medium transition-colors bg-primary text-white hover:bg-primary-hover"
           >
-            {isPresenter ? 'Presenter Mode' : 'Student Mode'}
-          </button>
+            Open Presentation View
+          </Link>
         </div>
       </header>
-
       <main className="p-4 sm:p-6 lg:p-8">
-        {isPresenter ? (
-          <PresenterView
-            slides={slides}
-            currentSlide={currentSlide}
-            onSlideChange={handleSlideChange}
-            socket={socket}
-            key={currentSlide}
-          />
-        ) : (
-          <StudentView
-            slides={slides}
-            currentSlide={currentSlide}
-            socket={socket}
-            key={currentSlide}
-          />
-        )}
+        <PresenterView
+          slides={slides}
+          currentSlide={currentSlide}
+          onSlideChange={handleSlideChange}
+          socket={socket}
+        />
       </main>
     </div>
+  );
+
+  return (
+    <Routes>
+      <Route path="/" element={<PresenterLayout />} />
+      <Route path="/presentation" element={
+        <StudentView
+          slides={slides}
+          currentSlide={currentSlide}
+          socket={socket}
+        />
+      } />
+    </Routes>
   );
 }
 

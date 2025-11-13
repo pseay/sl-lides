@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Editor from '@monaco-editor/react';
 
-export const CodeSlide = ({ slide, slideId, socket, isPresenter }) => {
+export const CodeSlide = ({ slide, slideId, socket, isPresenter, showTitle = true }) => {
   const [code, setCode] = useState(slide.initialCode || '');
   const editorRef = useRef(null);
 
@@ -25,8 +25,8 @@ export const CodeSlide = ({ slide, slideId, socket, isPresenter }) => {
   };
 
   return (
-    <div className="h-full flex flex-col">
-      <h2 className="text-3xl font-bold mb-4">{slide.title}</h2>
+    <div className={`h-full flex flex-col ${!showTitle ? 'p-8 sm:p-12 h-screen' : ''}`}>
+      {showTitle && <h2 className="text-3xl font-bold mb-4">{slide.title}</h2>}
       
       {slide.description && (
         <div className="mb-4 text-text-secondary">
