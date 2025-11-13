@@ -1,20 +1,16 @@
 import React from 'react';
-import { SlideDeck } from './SlideDeck';
+import { SlideContainer } from './SlideContainer';
 import { CodeSlide } from './CodeSlide';
 
 export const StudentView = ({ slides, currentSlide, socket }) => {
   const slide = slides[currentSlide];
 
   return (
-    <SlideDeck
-      slides={slides}
-      currentSlide={currentSlide}
-      onSlideChange={() => {}}
-    >
+    <SlideContainer>
       {slide.type === 'content' && (
         <div>
           <h2 className="text-3xl font-bold mb-6">{slide.title}</h2>
-          <div className="prose prose-invert max-w-none">
+          <div className="prose prose-invert max-w-none text-text">
             {slide.content}
           </div>
         </div>
@@ -28,6 +24,6 @@ export const StudentView = ({ slides, currentSlide, socket }) => {
           isPresenter={false}
         />
       )}
-    </SlideDeck>
+    </SlideContainer>
   );
 };

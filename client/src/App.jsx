@@ -24,39 +24,41 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      <div className="p-4 bg-gray-800 border-b border-gray-700">
-        <div className="max-w-6xl mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Coding Class Slideshow</h1>
+    <div className="min-h-screen">
+      <header className="p-4 bg-surface border-b border-border">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <h1 className="text-xl font-bold text-text-default">Sling Slides</h1>
           <button
             onClick={() => setIsPresenter(!isPresenter)}
-            className={`px-4 py-2 rounded ${
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
               isPresenter 
-                ? 'bg-purple-600 hover:bg-purple-700' 
-                : 'bg-blue-600 hover:bg-blue-700'
+                ? 'bg-primary text-white hover:bg-primary-hover' 
+                : 'bg-surface text-text-secondary hover:text-text-default'
             }`}
           >
             {isPresenter ? 'Presenter Mode' : 'Student Mode'}
           </button>
         </div>
-      </div>
+      </header>
 
-      {isPresenter ? (
-        <PresenterView
-          slides={slides}
-          currentSlide={currentSlide}
-          onSlideChange={handleSlideChange}
-          socket={socket}
-          key={currentSlide}
-        />
-      ) : (
-        <StudentView
-          slides={slides}
-          currentSlide={currentSlide}
-          socket={socket}
-          key={currentSlide}
-        />
-      )}
+      <main className="p-4 sm:p-6 lg:p-8">
+        {isPresenter ? (
+          <PresenterView
+            slides={slides}
+            currentSlide={currentSlide}
+            onSlideChange={handleSlideChange}
+            socket={socket}
+            key={currentSlide}
+          />
+        ) : (
+          <StudentView
+            slides={slides}
+            currentSlide={currentSlide}
+            socket={socket}
+            key={currentSlide}
+          />
+        )}
+      </main>
     </div>
   );
 }

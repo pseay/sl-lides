@@ -1,47 +1,46 @@
-import React from 'react';
+import { SlideContainer } from './SlideContainer';
 
 export const SlideDeck = ({ slides, currentSlide, onSlideChange, children }) => {
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      <div className="mb-4 flex gap-2">
-        {slides.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => onSlideChange(index)}
-            className={`px-3 py-1 rounded ${
-              currentSlide === index
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-            }`}
-          >
-            {index + 1}
-          </button>
-        ))}
-      </div>
+    <>
+      <SlideContainer>{children}</SlideContainer>
 
-      <div className="bg-gray-800 rounded-lg shadow-xl p-8 min-h-[600px]">
-        {children}
-      </div>
-
-      <div className="mt-4 flex justify-between">
+      {/* Navigation Controls */}
+      <div className="mt-6 flex justify-between items-center max-w-7xl mx-auto">
+        {/* Previous Button */}
         <button
           onClick={() => onSlideChange(Math.max(0, currentSlide - 1))}
           disabled={currentSlide === 0}
-          className="px-4 py-2 bg-gray-700 rounded hover:bg-gray-600 disabled:opacity-50"
+          className="px-4 py-2 bg-surface border border-border rounded-md text-sm font-medium text-text-secondary hover:text-text-default hover:border-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Previous
         </button>
-        <span className="text-gray-400">
-          Slide {currentSlide + 1} of {slides.length}
-        </span>
+
+        {/* Slide Indicators */}
+        <div className="flex gap-2">
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => onSlideChange(index)}
+              className={`h-2 w-2 rounded-full transition-colors ${
+                currentSlide === index
+                  ? 'bg-primary'
+                  : 'bg-border hover:bg-gray-600'
+              }`}
+              aria-label={`Go to slide ${index + 1}`}
+            >{index}</button>
+          ))}
+        </div>
+
+        {/* Next Button */}
         <button
           onClick={() => onSlideChange(Math.min(slides.length - 1, currentSlide + 1))}
           disabled={currentSlide === slides.length - 1}
-          className="px-4 py-2 bg-gray-700 rounded hover:bg-gray-600 disabled:opacity-50"
+          className="px-4 py-2 bg-surface border border-border rounded-md text-sm font-medium text-text-secondary hover:text-text-default hover:border-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Next
         </button>
       </div>
-    </div>
+    </>
   );
 };

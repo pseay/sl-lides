@@ -29,13 +29,13 @@ export const CodeSlide = ({ slide, slideId, socket, isPresenter }) => {
       <h2 className="text-3xl font-bold mb-4">{slide.title}</h2>
       
       {slide.description && (
-        <div className="mb-4 text-gray-300">
+        <div className="mb-4 text-text-secondary">
           {slide.description}
         </div>
       )}
 
-      <div className="flex-1 grid grid-cols-2 gap-4 min-h-[400px]">
-        <div className="border border-gray-600 rounded">
+      <div className="flex-1 grid grid-cols-2 gap-6 min-h-[450px]">
+        <div className="border border-border rounded-md overflow-hidden">
           <Editor
             height="100%"
             defaultLanguage={slide.language || 'javascript'}
@@ -46,6 +46,8 @@ export const CodeSlide = ({ slide, slideId, socket, isPresenter }) => {
               readOnly: !isPresenter,
               minimap: { enabled: false },
               fontSize: 14,
+              wordWrap: 'on',
+              padding: { top: 16 },
             }}
             onMount={(editor) => {
               editorRef.current = editor;
@@ -54,16 +56,16 @@ export const CodeSlide = ({ slide, slideId, socket, isPresenter }) => {
         </div>
 
         {slide.showOutput && (
-          <div className="bg-gray-900 border border-gray-600 rounded p-4 overflow-auto">
+          <div className="bg-background border border-border rounded-md p-4 overflow-auto">
             <h3 className="font-bold mb-2 text-green-400">Output:</h3>
-            <pre className="text-gray-300 whitespace-pre-wrap">{code}</pre>
+            <pre className="text-text-secondary whitespace-pre-wrap">{code}</pre>
           </div>
         )}
 
         {slide.showExample && (
-          <div className="bg-gray-900 border border-gray-600 rounded p-4 overflow-auto">
+          <div className="bg-background border border-border rounded-md p-4 overflow-auto">
             <h3 className="font-bold mb-2 text-blue-400">Example:</h3>
-            <pre className="text-gray-300 whitespace-pre-wrap">{slide.example}</pre>
+            <pre className="text-text-secondary whitespace-pre-wrap">{slide.example}</pre>
           </div>
         )}
       </div>
