@@ -2,7 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import Editor from '@monaco-editor/react';
 
 export const CodeSlide = ({ slide, slideId, socket, isPresenter, showTitle = true }) => {
-  const [code, setCode] = useState(slide.initialCode || '');
+  const storageKey = `slide-${slideId}-code`;
+  const [code, setCode] = useState(() => {
+    const savedCode = sessionStorage.getItem(storageKey);
+    return savedCode !== null ? savedCode : slide.initialCode || '';
+  });
   const editorRef = useRef(null);
 
   useEffect(() => {
@@ -11,16 +15,18 @@ export const CodeSlide = ({ slide, slideId, socket, isPresenter, showTitle = tru
       const handler = (codeUpdate) => {
         if (codeUpdate[slideId] !== undefined) {
           setCode(codeUpdate[slideId]);
+          sessionStorage.setItem(storageKey, codeUpdate[slideId]); // Also save student updates
         }
       };
       socket.on('codeUpdate', handler);
       return () => socket.off('codeUpdate', handler);
     }
-  }, [socket, slideId, isPresenter]);
+  }, [socket, slideId, isPresenter, storageKey]);
 
   // Presenter code change handler
   const handleCodeChange = (value) => {
     setCode(value);
+    sessionStorage.setItem(storageKey, value); // Save to session storage
     if (isPresenter) {
       socket.emit('codeChange', { slideId, code: value });
     }
