@@ -16,12 +16,13 @@ const WhiteboardSlide = ({ socket, isPresenter }) => {
   const [tool, setTool] = useState('pen');
   const [color, setColor] = useState('#000000');
   const [lineWidth, setLineWidth] = useState(5);
+  const [backgroundColor, setBackgroundColor] = useState('#ffffff');
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
     contextRef.current = context;
-
+    
     const resizeCanvas = () => {
       const parent = canvas.parentElement;
       const tempCanvas = document.createElement('canvas');
@@ -145,8 +146,13 @@ const WhiteboardSlide = ({ socket, isPresenter }) => {
       context.clearRect(0, 0, canvas.width, canvas.height);
     };
 
+    const handleBackgroundColorChangeEvent = (newColor) => {
+      setBackgroundColor(newColor);
+    };
+
     socket.on('drawing', handleDrawingEvent);
     socket.on('clearCanvas', handleClearEvent);
+    socket.on('backgroundColorChange', handleBackgroundColorChangeEvent);
 
     return () => {
       window.removeEventListener('resize', resizeCanvas);
@@ -160,6 +166,7 @@ const WhiteboardSlide = ({ socket, isPresenter }) => {
       canvas.removeEventListener('touchcancel', handleEnd);
       socket.off('drawing', handleDrawingEvent);
       socket.off('clearCanvas', handleClearEvent);
+      socket.off('backgroundColorChange', handleBackgroundColorChangeEvent);
     };
   }, [isPresenter, socket]);
 
@@ -178,6 +185,11 @@ const WhiteboardSlide = ({ socket, isPresenter }) => {
     setLineWidth(newLineWidth);
   };
 
+  const handleBackgroundColorChange = (newColor) => {
+    setBackgroundColor(newColor);
+    socket.emit('backgroundColorChange', newColor);
+  };
+
   const handleClear = () => {
     const canvas = canvasRef.current;
     contextRef.current.clearRect(0, 0, canvas.width, canvas.height);
@@ -192,6 +204,7 @@ const WhiteboardSlide = ({ socket, isPresenter }) => {
           <button onClick={() => handleToolChange('eraser')} className={`px-3 py-1 text-sm rounded ${tool === 'eraser' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}>Eraser</button>
           
           <input type="color" value={color} onChange={(e) => handleColorChange(e.target.value)} disabled={tool === 'eraser'} className="w-8 h-8 p-0 border-none" />
+          <input type="color" value={backgroundColor} onChange={(e) => handleBackgroundColorChange(e.target.value)} className="w-8 h-8 p-0 border-none" />
 
           <div className="flex items-center gap-2">
             <label className="text-sm">Size:</label>
@@ -202,7 +215,7 @@ const WhiteboardSlide = ({ socket, isPresenter }) => {
           <button onClick={handleClear} className="px-3 py-1 text-sm rounded bg-red-500 text-white ml-auto">Clear</button>
         </div>
       )}
-      <div className="w-full h-[calc(100vh-200px)] flex-grow" style={{background: "white"}}>
+      <div className="w-full h-[calc(100vh-200px)] flex-grow" style={{background: backgroundColor}}>
         <canvas ref={canvasRef} className="w-full h-full" />
       </div>
     </div>

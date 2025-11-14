@@ -44,6 +44,10 @@ io.on('connection', (socket) => {
     io.emit('clearCanvas'); // Broadcast to all clients
   });
 
+  socket.on('backgroundColorChange', (newColor) => {
+    socket.broadcast.emit('backgroundColorChange', newColor);
+  });
+
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
   });
