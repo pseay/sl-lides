@@ -10,8 +10,7 @@ export const SlideDeck = ({ slides, currentSlide, onSlideChange, children }) => 
         {/* Previous Button */}
         <button
           onClick={() => onSlideChange(Math.max(0, currentSlide - 1))}
-          disabled={currentSlide === 0}
-          className="px-4 py-2 bg-surface border border-border rounded-md text-sm font-medium text-text-secondary hover:text-text-default hover:border-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+className="px-4 py-2 bg-surface border border-border rounded-md text-sm font-medium text-text-secondary hover:text-text hover:border-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Previous
         </button>
@@ -22,7 +21,7 @@ export const SlideDeck = ({ slides, currentSlide, onSlideChange, children }) => 
             <button
               key={index}
               onClick={() => onSlideChange(index)}
-              className={`h-2 w-2 rounded-full transition-colors ${
+              className={`h-8 w-8 rounded-full transition-colors ${
                 currentSlide === index
                   ? 'bg-primary'
                   : 'bg-border hover:bg-gray-600'
@@ -36,7 +35,7 @@ export const SlideDeck = ({ slides, currentSlide, onSlideChange, children }) => 
         <button
           onClick={() => onSlideChange(Math.min(slides.length - 1, currentSlide + 1))}
           disabled={currentSlide === slides.length - 1}
-          className="px-4 py-2 bg-surface border border-border rounded-md text-sm font-medium text-text-secondary hover:text-text-default hover:border-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-4 py-2 bg-surface border border-border rounded-md text-sm font-medium text-secondary hover:text-default hover:border-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Next
         </button>

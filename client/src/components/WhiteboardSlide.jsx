@@ -215,7 +215,7 @@ const WhiteboardSlide = ({ socket, isPresenter }) => {
           <button onClick={handleClear} className="px-3 py-1 text-sm rounded bg-red-500 text-white ml-auto">Clear</button>
         </div>
       )}
-      <div className="w-full h-[calc(100vh-200px)] flex-grow" style={{background: backgroundColor}}>
+      <div className="w-full h-[calc(100vh-300px)] flex-grow" style={{background: backgroundColor}}>
         <canvas ref={canvasRef} className="w-full h-full" />
       </div>
     </div>

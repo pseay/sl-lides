@@ -34,7 +34,7 @@ function App() {
 
   const PresenterLayout = () => (
     <div className="h-screen flex flex-col">
-      <header className="p-4 bg-surface border-b border-border flex-shrink-0">
+      <header className="p-2 bg-surface border-b border-border flex-shrink-0">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <h1 className="text-xl font-bold text-text-default">Sling Slides</h1>
           <Link
@@ -47,7 +47,7 @@ function App() {
         </div>
       </header>
       <main className="flex-grow overflow-y-auto">
-        <div className="p-4 sm:p-6 lg:p-8">
+        <div className="p-2">
           <PresenterView
             slides={slides}
             currentSlide={currentSlide}

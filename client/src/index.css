@@ -1,13 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-background: #111827;
+  --color-surface: #1F2937;
+  --color-primary: #3B82F6;
+  --color-primary-hover: #2563EB;
+  --color-text: #E5E7EB;
+  --color-text-secondary: #9CA3AF;
+  --color-border: #374151;
+}
 
 body {
   font-family: 'Inter', sans-serif;
-  background-color: #111827; /* theme.colors.background */
-  color: #E5E7EB; /* theme.colors.text.DEFAULT */
+  background-color: theme(colors.background);
+  color: theme(colors.text);
   margin: 0;
 }
 
@@ -23,7 +31,7 @@ body {
 }
 
 .prose pre {
-  background-color: #111827;
+  background-color: theme(colors.background);
   padding: 1rem;
   border-radius: 0.5rem;
   margin: 1rem 0;
