@@ -8,7 +8,7 @@ export const SlideContent = ({ slide, slideId, socket, isPresenter }) => {
   return (
     <>
       {slide.type === 'content' && (
-        <div className="p-4 sm:p-6 lg:p-8">
+        <div style={{padding: "2em"}}>
           <h2 className="text-3xl font-bold mb-4">{slide.title}</h2>
           <div className="prose prose-invert max-w-none text-text">
             {slide.content}

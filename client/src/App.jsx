@@ -3,7 +3,7 @@ import { Routes, Route, Link } from 'react-router-dom';
 import io from 'socket.io-client';
 import { PresenterView } from './components/PresenterView';
 import { StudentView } from './components/StudentView';
-import slides from './slides/linkedListSlides';
+import slides from './slides/dominoSlides';
 
 const socket = io('http://localhost:3001');
 
