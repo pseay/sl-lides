@@ -72,7 +72,6 @@ int main() {
     cout << oneTwo.canFollow(twoThree) << endl;
 
     oneTwo.flip();
-    cout << oneTwo.canFollow(twoThree) << endl;
 }`,
   },
 
