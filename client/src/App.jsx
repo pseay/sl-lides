@@ -38,7 +38,7 @@ function App() {
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <h1 className="text-xl font-bold text-text-default">Sling Slides</h1>
           {/* Slide Navigation */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center justify-between w-1/2">
             {/* Previous Button */}
             <button
               onClick={() => handleSlideChange(Math.max(0, currentSlide - 1))}
@@ -49,18 +49,77 @@ function App() {
 
             {/* Slide Indicators */}
             <div className="flex gap-2">
-              {slides.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleSlideChange(index)}
-                  className={`h-8 w-8 rounded-full transition-colors ${
-                    currentSlide === index
-                      ? 'bg-primary'
-                      : 'bg-border hover:bg-gray-600'
-                  }`}
-                  aria-label={`Go to slide ${index + 1}`}
-                >{index}</button>
-              ))}
+              {slides.length <= 8 ? (
+                slides.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleSlideChange(index)}
+                    className={`h-8 w-8 rounded-full transition-colors ${
+                      currentSlide === index
+                        ? 'bg-primary'
+                        : 'bg-border hover:bg-gray-600'
+                    }`}
+                    aria-label={`Go to slide ${index + 1}`}
+                  >{index}</button>
+                ))
+              ) : (
+                <>
+                  {/* Always show first slide */}
+                  <button
+                    key={0}
+                    onClick={() => handleSlideChange(0)}
+                    className={`h-8 w-8 rounded-full transition-colors ${
+                      currentSlide === 0
+                        ? 'bg-primary'
+                        : 'bg-border hover:bg-gray-600'
+                    }`}
+                    aria-label={`Go to slide 1`}
+                  >0</button>
+
+                  {/* Ellipsis if currentSlide is far from the beginning */}
+                  {currentSlide > 3 && <span className="text-text-secondary">...</span>}
+
+                  {/* Slides around current slide */}
+                  {slides.map((_, index) => {
+                    if (
+                      (index >= currentSlide - 2 && index <= currentSlide + 2) &&
+                      index !== 0 &&
+                      index !== slides.length - 1
+                    ) {
+                      return (
+                        <button
+                          key={index}
+                          onClick={() => handleSlideChange(index)}
+                          className={`h-8 w-8 rounded-full transition-colors ${
+                            currentSlide === index
+                              ? 'bg-primary'
+                              : 'bg-border hover:bg-gray-600'
+                          }`}
+                          aria-label={`Go to slide ${index + 1}`}
+                        >{index}</button>
+                      );
+                    }
+                    return null;
+                  })}
+
+                  {/* Ellipsis if currentSlide is far from the end */}
+                  {currentSlide < slides.length - 4 && <span className="text-text-secondary">...</span>}
+
+                  {/* Always show last slide */}
+                  {slides.length > 1 && (
+                    <button
+                      key={slides.length - 1}
+                      onClick={() => handleSlideChange(slides.length - 1)}
+                      className={`h-8 w-8 rounded-full transition-colors ${
+                        currentSlide === slides.length - 1
+                          ? 'bg-primary'
+                          : 'bg-border hover:bg-gray-600'
+                      }`}
+                      aria-label={`Go to slide ${slides.length}`}
+                    >{slides.length - 1}</button>
+                  )}
+                </>
+              )}
             </div>
 
             {/* Next Button */}
