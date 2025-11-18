@@ -224,8 +224,13 @@ const WhiteboardSlide = ({ socket, isPresenter }) => {
           <button onClick={handleClear} className="px-3 py-1 text-sm rounded bg-red-500 text-white ml-auto">Clear</button>
         </div>
       )}
-      <div className="w-full h-[calc(100vh-300px)] flex-grow" style={{background: backgroundColor}}>
-        <canvas ref={canvasRef} className="w-full h-full" />
+      <div className={`flex-grow ${isPresenter ? "w-full" : "w-4/5 mx-auto my-5"}`} style={{ background: backgroundColor }}>
+        <div className="relative w-full" style={{ paddingTop: '56.25%' }}>
+          <canvas
+            ref={canvasRef}
+            className="absolute top-0 left-0 w-full h-full"
+          />
+        </div>
       </div>
     </div>
   );
