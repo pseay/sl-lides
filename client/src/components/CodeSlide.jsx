@@ -51,7 +51,7 @@ export const CodeSlide = ({ slide, slideId, socket, isPresenter, showTitle = tru
         </div>
       )}
 
-      <div className="flex flex-1 gap-6 min-h-[450px] mx-4">
+      <div className={`flex flex-1 gap-6 mx-4 ${isPresenter ? "min-h-[450px]" : "min-h-[80svh]"}`}>
         <div className="flex-1 border border-border rounded-md overflow-hidden">
           <Editor
             height="100%"
