@@ -199,12 +199,21 @@ const WhiteboardSlide = ({ socket, isPresenter }) => {
   return (
     <div className="w-full h-full flex flex-col">
       {isPresenter && (
-        <div className="p-2 bg-gray-100 border-b border-gray-300 flex items-center gap-4 flex-wrap">
-          <button onClick={() => handleToolChange('pen')} className={`px-3 py-1 text-sm rounded ${tool === 'pen' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}>Pen</button>
-          <button onClick={() => handleToolChange('eraser')} className={`px-3 py-1 text-sm rounded ${tool === 'eraser' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}>Eraser</button>
+        <div className="p-2 bg-gray-100 border-b border-gray-300 flex items-center gap-4 flex-wrap text-black">
+          <div className='border border-black'>
+            <button onClick={() => handleToolChange('pen')} className={`px-3 py-1 text-sm ${tool === 'pen' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}>Pen</button>
+            <button onClick={() => handleToolChange('eraser')} className={`px-3 py-1 text-sm ${tool === 'eraser' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}>Eraser</button>
+          </div>
           
-          <input type="color" value={color} onChange={(e) => handleColorChange(e.target.value)} disabled={tool === 'eraser'} className="w-8 h-8 p-0 border-none" />
-          <input type="color" value={backgroundColor} onChange={(e) => handleBackgroundColorChange(e.target.value)} className="w-8 h-8 p-0 border-none" />
+          <div className="flex items-center gap-2">
+            <label className="text-sm">Tool:</label>
+            <input type="color" value={color} onChange={(e) => handleColorChange(e.target.value)} disabled={tool === 'eraser'} className="w-8 h-8 p-0 border-none disabled:cursor-not-allowed" />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <label className="text-sm">Background:</label>
+            <input type="color" value={backgroundColor} onChange={(e) => handleBackgroundColorChange(e.target.value)} className="w-8 h-8 p-0 border-none" />
+          </div>
 
           <div className="flex items-center gap-2">
             <label className="text-sm">Size:</label>
