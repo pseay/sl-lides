@@ -43,7 +43,7 @@ export const CodeSlide = ({ slide, slideId, socket, isPresenter, showTitle = tru
 
   return (
     <div className={`h-full flex flex-col ${!showTitle ? 'p-4 sm:p-6 h-screen' : ''}`}>
-      {showTitle && <h2 className="text-3xl font-bold mb-4">{slide.title}</h2>}
+      {showTitle && <h2 className="m-4 text-3xl font-bold mb-4">{slide.title}</h2>}
       
       {isPresenter && slide.description && (
         <div className="mb-4 text-text-secondary">
@@ -51,8 +51,8 @@ export const CodeSlide = ({ slide, slideId, socket, isPresenter, showTitle = tru
         </div>
       )}
 
-      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 min-h-[450px]">
-        <div className="border border-border rounded-md overflow-hidden">
+      <div className="flex flex-1 gap-6 min-h-[450px] mx-4">
+        <div className="flex-1 border border-border rounded-md overflow-hidden">
           <Editor
             height="100%"
             language={slide.language || 'javascript'}
@@ -63,20 +63,22 @@ export const CodeSlide = ({ slide, slideId, socket, isPresenter, showTitle = tru
             onMount={(editor) => (editorRef.current = editor)}
           />
         </div>
-        <div className="flex flex-col">
-          {slide.showOutput && (
-            <div className="bg-background border border-border rounded-md p-4 overflow-auto h-full">
-              <h3 className="font-bold mb-2 text-green-400">Output:</h3>
-              <pre className="text-text-secondary whitespace-pre-wrap">{code}</pre>
-            </div>
-          )}
-          {slide.showExample && (
-            <div className="bg-background border border-border rounded-md p-4 overflow-auto h-full mt-4">
-              <h3 className="font-bold mb-2 text-blue-400">Example:</h3>
-              <pre className="text-text-secondary whitespace-pre-wrap">{slide.example}</pre>
-            </div>
-          )}
-        </div>
+        {slide.showOutput && slide.showExample &&
+          <div className="flex flex-col">
+            {slide.showOutput && (
+              <div className="bg-background border border-border rounded-md p-4 overflow-auto h-full">
+                <h3 className="font-bold mb-2 text-green-400">Output:</h3>
+                <pre className="text-text-secondary whitespace-pre-wrap">{code}</pre>
+              </div>
+            )}
+            {slide.showExample && (
+              <div className="bg-background border border-border rounded-md p-4 overflow-auto h-full mt-4">
+                <h3 className="font-bold mb-2 text-blue-400">Example:</h3>
+                <pre className="text-text-secondary whitespace-pre-wrap">{slide.example}</pre>
+              </div>
+            )}
+          </div>
+        }
       </div>
     </div>
   );
