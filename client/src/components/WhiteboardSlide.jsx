@@ -1,7 +1,7 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
-const WhiteboardSlide = ({ socket, isPresenter }) => {
+const WhiteboardSlide = ({ channel, isPresenter, whiteboardState }) => {
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
   const drawingRef = useRef(false);
@@ -12,11 +12,53 @@ const WhiteboardSlide = ({ socket, isPresenter }) => {
   const colorRef = useRef('#000000');
   const lineWidthRef = useRef(5);
 
-  // State for updating the UI controls
+  // State for updating the UI controls (only for presenter)
   const [tool, setTool] = useState('pen');
   const [color, setColor] = useState('#000000');
   const [lineWidth, setLineWidth] = useState(5);
-  const [backgroundColor, setBackgroundColor] = useState('#ffffff');
+  // backgroundColor is now controlled by whiteboardState from props
+
+  // useCallback to memoize draw function
+  const draw = useCallback((x0, y0, x1, y1, drawTool, drawColor, drawLineWidth, emit) => {
+    const context = contextRef.current;
+    if (!context) return;
+
+    context.beginPath();
+    context.moveTo(x0, y0);
+    context.lineTo(x1, y1);
+    context.lineCap = 'round';
+    context.lineJoin = 'round';
+    context.lineWidth = drawLineWidth;
+
+    if (drawTool === 'pen') {
+      context.globalCompositeOperation = 'source-over';
+      context.strokeStyle = drawColor;
+    } else if (drawTool === 'eraser') {
+      context.globalCompositeOperation = 'destination-out';
+    }
+    
+    context.stroke();
+    context.closePath();
+
+    if (!emit) return; // Only emit if triggered by local action (presenter)
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const { width, height } = canvas;
+    channel.postMessage({
+      type: 'drawing',
+      payload: {
+        x0: x0 / width,
+        y0: y0 / height,
+        x1: x1 / width,
+        y1: y1 / height,
+        tool: drawTool,
+        color: drawColor,
+        lineWidth: drawLineWidth,
+      }
+    });
+  }, [channel]); // Only re-create if channel changes
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -55,38 +97,6 @@ const WhiteboardSlide = ({ socket, isPresenter }) => {
         x: (e.clientX - rect.left) * scaleX,
         y: (e.clientY - rect.top) * scaleY,
       };
-    };
-
-    const draw = (x0, y0, x1, y1, drawTool, drawColor, drawLineWidth, emit) => {
-      context.beginPath();
-      context.moveTo(x0, y0);
-      context.lineTo(x1, y1);
-      context.lineCap = 'round';
-      context.lineJoin = 'round';
-      context.lineWidth = drawLineWidth;
-
-      if (drawTool === 'pen') {
-        context.globalCompositeOperation = 'source-over';
-        context.strokeStyle = drawColor;
-      } else if (drawTool === 'eraser') {
-        context.globalCompositeOperation = 'destination-out';
-      }
-      
-      context.stroke();
-      context.closePath();
-
-      if (!emit) return;
-
-      const { width, height } = canvas;
-      socket.emit('drawing', {
-        x0: x0 / width,
-        y0: y0 / height,
-        x1: x1 / width,
-        y1: y1 / height,
-        tool: drawTool,
-        color: drawColor,
-        lineWidth: drawLineWidth,
-      });
     };
 
     const handleStart = (e) => {
@@ -128,31 +138,7 @@ const WhiteboardSlide = ({ socket, isPresenter }) => {
     canvas.addEventListener('touchend', handleEnd);
     canvas.addEventListener('touchcancel', handleEnd);
 
-    const handleDrawingEvent = (data) => {
-      const { width, height } = canvas;
-      draw(
-        data.x0 * width,
-        data.y0 * height,
-        data.x1 * width,
-        data.y1 * height,
-        data.tool,
-        data.color,
-        data.lineWidth,
-        false
-      );
-    };
-
-    const handleClearEvent = () => {
-      context.clearRect(0, 0, canvas.width, canvas.height);
-    };
-
-    const handleBackgroundColorChangeEvent = (newColor) => {
-      setBackgroundColor(newColor);
-    };
-
-    socket.on('drawing', handleDrawingEvent);
-    socket.on('clearCanvas', handleClearEvent);
-    socket.on('backgroundColorChange', handleBackgroundColorChangeEvent);
+    // No local messageHandler for channel.onmessage here, App.jsx handles it
 
     return () => {
       window.removeEventListener('resize', resizeCanvas);
@@ -164,11 +150,34 @@ const WhiteboardSlide = ({ socket, isPresenter }) => {
       canvas.removeEventListener('touchmove', handleMove);
       canvas.removeEventListener('touchend', handleEnd);
       canvas.removeEventListener('touchcancel', handleEnd);
-      socket.off('drawing', handleDrawingEvent);
-      socket.off('clearCanvas', handleClearEvent);
-      socket.off('backgroundColorChange', handleBackgroundColorChangeEvent);
     };
-  }, [isPresenter, socket]);
+  }, [isPresenter, draw]); // Added draw as dependency
+
+  // Effect to re-draw history when whiteboardState.drawings changes (for students) or on mount
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const context = contextRef.current;
+    if (!canvas || !context) return;
+
+    // Clear canvas before re-drawing, effectively handling clearCanvas too
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    whiteboardState.drawings.forEach(data => {
+      draw(
+        data.x0 * canvas.width,
+        data.y0 * canvas.height,
+        data.x1 * canvas.width,
+        data.y1 * canvas.height,
+        data.tool,
+        data.color,
+        data.lineWidth,
+        false // Do not emit, just draw
+      );
+    });
+  }, [whiteboardState.drawings, draw]); // Re-draw when drawing history updates
+
+
+
 
   const handleToolChange = (newTool) => {
     toolRef.current = newTool;
@@ -186,14 +195,20 @@ const WhiteboardSlide = ({ socket, isPresenter }) => {
   };
 
   const handleBackgroundColorChange = (newColor) => {
-    setBackgroundColor(newColor);
-    socket.emit('backgroundColorChange', newColor);
+    channel.postMessage({ type: 'backgroundColorChange', payload: newColor });
   };
 
   const handleClear = () => {
     const canvas = canvasRef.current;
-    contextRef.current.clearRect(0, 0, canvas.width, canvas.height);
-    socket.emit('clearCanvas');
+    const context = contextRef.current;
+
+    // Clear locally for the presenter's view
+    if (isPresenter && context && canvas) {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    
+    // Always post message to clear other tabs (students)
+    channel.postMessage({ type: 'clearCanvas', payload: {} });
   };
 
   return (
@@ -212,7 +227,7 @@ const WhiteboardSlide = ({ socket, isPresenter }) => {
 
           <div className="flex items-center gap-2">
             <label className="text-sm">Background:</label>
-            <input type="color" value={backgroundColor} onChange={(e) => handleBackgroundColorChange(e.target.value)} className="w-8 h-8 p-0 border-none" />
+            <input type="color" value={whiteboardState.backgroundColor} onChange={(e) => handleBackgroundColorChange(e.target.value)} className="w-8 h-8 p-0 border-none" />
           </div>
 
           <div className="flex items-center gap-2">
@@ -225,7 +240,7 @@ const WhiteboardSlide = ({ socket, isPresenter }) => {
         </div>
       )}
       <div className={`flex-grow ${isPresenter ? "w-full" : "w-4/5 mx-auto my-5"}`} >
-        <div className="relative w-full" style={{ paddingTop: '56.25%', background: backgroundColor }}>
+        <div className="relative w-full" style={{ paddingTop: '56.25%', background: whiteboardState.backgroundColor }}>
           <canvas
             ref={canvasRef}
             className="absolute top-0 left-0 w-full h-full"
@@ -234,11 +249,6 @@ const WhiteboardSlide = ({ socket, isPresenter }) => {
       </div>
     </div>
   );
-};
-
-WhiteboardSlide.propTypes = {
-  socket: PropTypes.object.isRequired,
-  isPresenter: PropTypes.bool.isRequired,
 };
 
 export default WhiteboardSlide;

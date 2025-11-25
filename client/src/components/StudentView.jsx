@@ -1,7 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { SlideContent } from './SlideContent';
 
-export const StudentView = ({ slides, currentSlide, socket }) => {
+export const StudentView = ({ slides, currentSlide, channel, codeState, whiteboardState }) => {
   const slide = slides[currentSlide];
 
   return (
@@ -9,9 +10,19 @@ export const StudentView = ({ slides, currentSlide, socket }) => {
       <SlideContent 
         slide={slide}
         slideId={currentSlide}
-        socket={socket}
+        channel={channel}
         isPresenter={false}
+        codeState={codeState}
+        whiteboardState={whiteboardState}
       />
     </div>
   );
+};
+
+StudentView.propTypes = {
+  slides: PropTypes.array.isRequired,
+  currentSlide: PropTypes.number.isRequired,
+  channel: PropTypes.object.isRequired,
+  codeState: PropTypes.object.isRequired,
+  whiteboardState: PropTypes.object.isRequired,
 };

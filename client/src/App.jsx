@@ -1,35 +1,81 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
-import io from 'socket.io-client';
 import { PresenterView } from './components/PresenterView';
 import { StudentView } from './components/StudentView';
 import slides from './slides/dominoSlides';
 
-const socket = io('http://localhost:3001');
+const bc = new BroadcastChannel('sling-slides'); // Direct instantiation
 
 function App() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [codeState, setCodeState] = useState({}); // Stores code for all slides { slideId: code }
+  const [whiteboardState, setWhiteboardState] = useState({ // Stores whiteboard state for all slides
+    backgroundColor: '#ffffff',
+    drawings: [], 
+  });
 
   useEffect(() => {
-    // Listen for slide changes from the server
-    socket.on('slideChange', (index) => {
-      setCurrentSlide(index);
-    });
+    // Handler for all incoming messages
+    const messageHandler = (event) => {
+      const { type, payload } = event.data;
 
-    // Request initial state on connect
-    socket.on('connect', () => {
-      // This could be an explicit event from the server if needed
-    });
+      switch (type) {
+        case 'slideChange':
+          setCurrentSlide(payload);
+          break;
+        case 'requestSync':
+          // Respond with current state
+          bc.postMessage({
+            type: 'doSync',
+            payload: {
+              currentSlide: currentSlide,
+              codeState: codeState,
+              whiteboardState: whiteboardState,
+            },
+            senderId: bc.name,
+          });
+          break;
+        case 'doSync':
+          // Only update if current tab isn't the one that initiated the sync
+          if (event.data.senderId !== bc.name) { 
+            setCurrentSlide(payload.currentSlide);
+            setCodeState(payload.codeState || {});
+            setWhiteboardState(payload.whiteboardState || { backgroundColor: '#ffffff', drawings: [] });
+          }
+          break;
+        case 'codeChange':
+          setCodeState(prev => ({ ...prev, [payload.slideId]: payload.code }));
+          break;
+        case 'backgroundColorChange':
+          setWhiteboardState(prev => ({ ...prev, backgroundColor: payload }));
+          break;
+        case 'clearCanvas':
+          setWhiteboardState(prev => ({ ...prev, drawings: [] }));
+          break;
+        case 'drawing':
+          setWhiteboardState(prev => ({
+            ...prev,
+            drawings: [...prev.drawings, payload]
+          }));
+          break;
+        default:
+          break;
+      }
+    };
+
+    bc.onmessage = messageHandler;
+
+    // When this tab loads, request state from other tabs
+    bc.postMessage({ type: 'requestSync', payload: {}, senderId: bc.name });
 
     return () => {
-      socket.off('slideChange');
-      socket.off('connect');
+      bc.onmessage = null; // Clean up the message handler
     };
-  }, []);
+  }, [currentSlide, codeState, whiteboardState]); // Added dependencies for state syncing
 
   const handleSlideChange = (index) => {
     setCurrentSlide(index);
-    socket.emit('changeSlide', index);
+    bc.postMessage({ type: 'slideChange', payload: index });
   };
 
   const PresenterLayout = () => (
@@ -146,7 +192,9 @@ function App() {
             slides={slides}
             currentSlide={currentSlide}
             onSlideChange={handleSlideChange}
-            socket={socket}
+            channel={bc}
+            codeState={codeState}
+            whiteboardState={whiteboardState}
           />
         </div>
       </main>
@@ -160,7 +208,9 @@ function App() {
         <StudentView
           slides={slides}
           currentSlide={currentSlide}
-          socket={socket}
+          channel={bc}
+          codeState={codeState}
+          whiteboardState={whiteboardState}
           key={currentSlide}
         />
       } />

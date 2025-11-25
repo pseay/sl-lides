@@ -1,35 +1,38 @@
 import React, { useState, useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
 import Editor from '@monaco-editor/react';
 
-export const CodeSlide = ({ slide, slideId, socket, isPresenter, showTitle = true }) => {
+export const CodeSlide = ({ slide, slideId, channel, isPresenter, showTitle = true, codeState }) => {
   const storageKey = `slide-${slideId}-code`;
-  const [code, setCode] = useState(() => {
-    const savedCode = sessionStorage.getItem(storageKey);
-    return savedCode !== null ? savedCode : slide.initialCode || '';
+  // Presenter manages code locally and broadcasts. Students get code from centralized codeState.
+  const [localCode, setLocalCode] = useState(() => {
+    if (isPresenter) {
+      const savedCode = sessionStorage.getItem(storageKey);
+      return savedCode !== null ? savedCode : slide.initialCode || '';
+    }
+    return codeState[slideId] || slide.initialCode || '';
   });
+
   const editorRef = useRef(null);
 
+  // Update local code if presenter changes or if student and codeState updates
   useEffect(() => {
-    // Student listeners
     if (!isPresenter) {
-      const handler = (codeUpdate) => {
-        if (codeUpdate[slideId] !== undefined) {
-          const newCode = codeUpdate[slideId];
-          setCode(newCode);
-          sessionStorage.setItem(storageKey, newCode);
-        }
-      };
-      socket.on('codeUpdate', handler);
-      return () => socket.off('codeUpdate', handler);
+      setLocalCode(codeState[slideId] || slide.initialCode || '');
+    } else {
+      // For presenter, ensure local code reflects sessionStorage on mount/remount
+      const savedCode = sessionStorage.getItem(storageKey);
+      setLocalCode(savedCode !== null ? savedCode : slide.initialCode || '');
     }
-  }, [socket, slideId, isPresenter, storageKey]);
+  }, [slideId, isPresenter, codeState, slide.initialCode, storageKey]);
+
 
   // Presenter code change handler
   const handleCodeChange = (value) => {
-    setCode(value);
+    setLocalCode(value);
     sessionStorage.setItem(storageKey, value);
     if (isPresenter) {
-      socket.emit('codeChange', { slideId, code: value });
+      channel.postMessage({ type: 'codeChange', payload: { slideId, code: value } });
     }
   };
 
@@ -40,6 +43,8 @@ export const CodeSlide = ({ slide, slideId, socket, isPresenter, showTitle = tru
     wordWrap: 'on',
     padding: { top: 16 },
   };
+
+  const currentCode = isPresenter ? localCode : (codeState[slideId] || slide.initialCode || '');
 
   return (
     <div className={`h-full flex flex-col ${!showTitle ? 'p-4 sm:p-6 h-screen' : ''}`}>
@@ -56,7 +61,7 @@ export const CodeSlide = ({ slide, slideId, socket, isPresenter, showTitle = tru
           <Editor
             height="100%"
             language={slide.language || 'javascript'}
-            value={code}
+            value={currentCode}
             onChange={handleCodeChange}
             theme="vs-dark"
             options={editorOptions}
@@ -68,7 +73,7 @@ export const CodeSlide = ({ slide, slideId, socket, isPresenter, showTitle = tru
             {slide.showOutput && (
               <div className="bg-background border border-border rounded-md p-4 overflow-auto h-full">
                 <h3 className="font-bold mb-2 text-green-400">Output:</h3>
-                <pre className="text-text-secondary whitespace-pre-wrap">{code}</pre>
+                <pre className="text-text-secondary whitespace-pre-wrap">{currentCode}</pre>
               </div>
             )}
             {slide.showExample && (
@@ -82,4 +87,13 @@ export const CodeSlide = ({ slide, slideId, socket, isPresenter, showTitle = tru
       </div>
     </div>
   );
+};
+
+CodeSlide.propTypes = {
+  slide: PropTypes.object.isRequired,
+  slideId: PropTypes.number.isRequired,
+  channel: PropTypes.object.isRequired,
+  isPresenter: PropTypes.bool.isRequired,
+  showTitle: PropTypes.bool,
+  codeState: PropTypes.object.isRequired,
 };

@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import Editor from '@monaco-editor/react';
+import PropTypes from 'prop-types';
 import { SlideDeck } from './SlideDeck';
 import { SlideContent } from './SlideContent';
 
-export const PresenterView = ({ slides, currentSlide, onSlideChange, socket }) => {
+export const PresenterView = ({ slides, currentSlide, onSlideChange, channel, codeState, whiteboardState }) => {
   const slide = slides[currentSlide];
 
   useEffect(() => {
@@ -41,8 +42,10 @@ export const PresenterView = ({ slides, currentSlide, onSlideChange, socket }) =
         <SlideContent
           slide={slide}
           slideId={currentSlide}
-          socket={socket}
+          channel={channel}
           isPresenter={true}
+          codeState={codeState}
+          whiteboardState={whiteboardState}
         />
       </SlideDeck>
 
@@ -67,4 +70,13 @@ export const PresenterView = ({ slides, currentSlide, onSlideChange, socket }) =
       )}
     </>
   );
+};
+
+PresenterView.propTypes = {
+  slides: PropTypes.array.isRequired,
+  currentSlide: PropTypes.number.isRequired,
+  onSlideChange: PropTypes.func.isRequired,
+  channel: PropTypes.object.isRequired,
+  codeState: PropTypes.object.isRequired,
+  whiteboardState: PropTypes.object.isRequired,
 };

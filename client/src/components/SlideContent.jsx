@@ -1,8 +1,9 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { CodeSlide } from './CodeSlide';
 import WhiteboardSlide from './WhiteboardSlide';
 
-export const SlideContent = ({ slide, slideId, socket, isPresenter }) => {
+export const SlideContent = ({ slide, slideId, channel, isPresenter, codeState, whiteboardState }) => {
   if (!slide) return null;
 
   return (
@@ -20,17 +21,28 @@ export const SlideContent = ({ slide, slideId, socket, isPresenter }) => {
         <CodeSlide
           slide={slide}
           slideId={slideId}
-          socket={socket}
+          channel={channel}
           isPresenter={isPresenter}
+          codeState={codeState}
         />
       )}
 
       {slide.type === 'whiteboard' && (
         <WhiteboardSlide
-          socket={socket}
+          channel={channel}
           isPresenter={isPresenter}
+          whiteboardState={whiteboardState}
         />
       )}
     </>
   );
+};
+
+SlideContent.propTypes = {
+  slide: PropTypes.object,
+  slideId: PropTypes.number.isRequired,
+  channel: PropTypes.object.isRequired,
+  isPresenter: PropTypes.bool.isRequired,
+  codeState: PropTypes.object.isRequired,
+  whiteboardState: PropTypes.object.isRequired,
 };
