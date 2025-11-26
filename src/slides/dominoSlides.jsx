@@ -1,7 +1,3 @@
-import HowToPlayImage from '../assets/how-to.png'
-import PlayingImage from '../assets/playing.png'
-import MatchingImage from '../assets/matching.png'
-
 const slides = [
   {
     type: 'content',
@@ -26,8 +22,8 @@ const slides = [
     type: 'content',
     title: 'Mexican Train',
     content: <div className='flex flex-row justify-center' style={{gap: "2em"}}>
-        <img src={HowToPlayImage} alt="How to play Mexican Train" width="30%" />
-        <img src={PlayingImage} alt="Playing Mexican Train" width="30%" />
+        <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.thirtyhandmadedays.com%2Fwp-content%2Fuploads%2F2020%2F05%2Fhow-to-play-mexican-train.jpg&f=1&nofb=1&ipt=66e756a5b42f17129130e00b835741bf1462b1766664521172ab55e6106af619" alt="How to play Mexican Train" width="30%" />
+        <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F3%2F38%2FMexican_Train.jpg%2F660px-Mexican_Train.jpg&f=1&nofb=1&ipt=ad076fa6ee1a071377502a1ca4ebde0894f7b3e87c29f652683bf20c1e9e1d62" alt="Playing Mexican Train" width="30%" />
     </div>
   },
 
@@ -35,7 +31,7 @@ const slides = [
     type: 'content',
     title: 'Mexican Train',
     content: <div className='flex flex-row justify-center' style={{gap: "2em"}}>
-        <img src={MatchingImage} alt="The rule for us" width="30%" />
+        <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi2.wp.com%2Fwww.glowingeyegames.com%2Fwp-content%2Fuploads%2F2018%2F07%2FMTDC-iPad-shot01.jpeg&f=1&nofb=1&ipt=3c157f620b28feb4fbbc58680501038080c19e93689dcd216af2c2ed4a98be34" alt="The rule for us" width="30%" />
     </div>
   },
 
