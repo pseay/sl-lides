@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { SlideContent } from './SlideContent';
 
-export const StudentView = ({ slides, currentSlide, channel, codeState, whiteboardState }) => {
+export const StudentView = ({ slides, currentSlide, channel, codeState, whiteboardState, currentStep }) => {
   const slide = slides[currentSlide];
 
   return (
@@ -14,6 +14,7 @@ export const StudentView = ({ slides, currentSlide, channel, codeState, whiteboa
         isPresenter={false}
         codeState={codeState}
         whiteboardState={whiteboardState}
+        currentStep={currentStep}
       />
     </div>
   );
@@ -25,4 +26,5 @@ StudentView.propTypes = {
   channel: PropTypes.object.isRequired,
   codeState: PropTypes.object.isRequired,
   whiteboardState: PropTypes.object.isRequired,
+  currentStep: PropTypes.number,
 };

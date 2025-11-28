@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { SlideDeck } from './SlideDeck';
 import { SlideContent } from './SlideContent';
 
-export const PresenterView = ({ slides, currentSlide, onSlideChange, channel, codeState, whiteboardState }) => {
+export const PresenterView = ({ slides, currentSlide, onNext, onPrev, channel, codeState, whiteboardState, currentStep }) => {
   const slide = slides[currentSlide];
 
   useEffect(() => {
@@ -20,9 +20,9 @@ export const PresenterView = ({ slides, currentSlide, onSlideChange, channel, co
       }
 
       if (event.key === 'ArrowRight') {
-        onSlideChange(Math.min(slides.length - 1, currentSlide + 1));
+        onNext();
       } else if (event.key === 'ArrowLeft') {
-        onSlideChange(Math.max(0, currentSlide - 1));
+        onPrev();
       }
     };
 
@@ -30,7 +30,7 @@ export const PresenterView = ({ slides, currentSlide, onSlideChange, channel, co
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [currentSlide, slides.length, onSlideChange]);
+  }, [currentSlide, onNext, onPrev]);
 
   const isCodeWithSolution = slide.type === 'code' && slide.solution;
 
@@ -42,7 +42,6 @@ export const PresenterView = ({ slides, currentSlide, onSlideChange, channel, co
             <SlideDeck
               slides={slides}
               currentSlide={currentSlide}
-              onSlideChange={onSlideChange}
             >
               <SlideContent
                 slide={slide}
@@ -51,6 +50,7 @@ export const PresenterView = ({ slides, currentSlide, onSlideChange, channel, co
                 isPresenter={true}
                 codeState={codeState}
                 whiteboardState={whiteboardState}
+                currentStep={currentStep}
               />
             </SlideDeck>
           </div>
@@ -87,7 +87,6 @@ export const PresenterView = ({ slides, currentSlide, onSlideChange, channel, co
           <SlideDeck
             slides={slides}
             currentSlide={currentSlide}
-            onSlideChange={onSlideChange}
           >
             <SlideContent
               slide={slide}
@@ -96,6 +95,7 @@ export const PresenterView = ({ slides, currentSlide, onSlideChange, channel, co
               isPresenter={true}
               codeState={codeState}
               whiteboardState={whiteboardState}
+              currentStep={currentStep}
             />
           </SlideDeck>
 
@@ -129,8 +129,10 @@ export const PresenterView = ({ slides, currentSlide, onSlideChange, channel, co
 PresenterView.propTypes = {
   slides: PropTypes.array.isRequired,
   currentSlide: PropTypes.number.isRequired,
-  onSlideChange: PropTypes.func.isRequired,
+  onNext: PropTypes.func.isRequired,
+  onPrev: PropTypes.func.isRequired,
   channel: PropTypes.object.isRequired,
   codeState: PropTypes.object.isRequired,
   whiteboardState: PropTypes.object.isRequired,
+  currentStep: PropTypes.number,
 };

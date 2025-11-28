@@ -11,41 +11,82 @@ const defaultSlides = [
     id: '1',
     type: 'content',
     title: 'A new section problem - Dominoes!',
-    content: `
-      <div>
-        <p>Preston Seay</p>
-        <br>
-        <h3 class="text-xl mb-4">Presentation Plan</h3>
-        <ul class="list-disc list-inside space-y-2 text-lg">
-          <li>The game</li>
-          <li>The problem</li>
-          <li>The Solution</li>
-          <li>Why?</li>
-          <li>Bonus???</li>
-        </ul>
-      </div>
-    `
+    layout: {
+      direction: 'column',
+      alignItems: 'flex-start',
+      justifyContent: 'flex-start',
+      gap: '1rem'
+    },
+    elements: [
+      {
+        id: '1-1',
+        type: 'text',
+        content: 'Preston Seay',
+        style: { fontSize: '20px' }
+      },
+      {
+        id: '1-2',
+        type: 'text',
+        content: 'Presentation Plan',
+        style: { fontSize: '24px', fontWeight: 'bold', marginTop: '1rem' }
+      },
+      {
+        id: '1-3',
+        type: 'list',
+        items: [
+          'The game',
+          'The problem',
+          'The Solution',
+          'Why?',
+          'Bonus???'
+        ],
+        style: { fontSize: '20px' }
+      }
+    ]
   },
   {
     id: '2',
     type: 'content',
     title: 'Mexican Train',
-    content: `
-      <div class='flex flex-row justify-center' style='gap: 2em'>
-        <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.thirtyhandmadedays.com%2Fwp-content%2Fuploads%2F2020%2F05%2Fhow-to-play-mexican-train.jpg&f=1&nofb=1&ipt=66e756a5b42f17129130e00b835741bf1462b1766664521172ab55e6106af619" alt="How to play Mexican Train" width="30%" />
-        <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F3%2F38%2FMexican_Train.jpg%2F660px-Mexican_Train.jpg&f=1&nofb=1&ipt=ad076fa6ee1a071377502a1ca4ebde0894f7b3e87c29f652683bf20c1e9e1d62" alt="Playing Mexican Train" width="30%" />
-      </div>
-    `
+    layout: {
+      direction: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '2rem'
+    },
+    elements: [
+      {
+        id: '2-1',
+        type: 'image',
+        content: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.thirtyhandmadedays.com%2Fwp-content%2Fuploads%2F2020%2F05%2Fhow-to-play-mexican-train.jpg&f=1&nofb=1&ipt=66e756a5b42f17129130e00b835741bf1462b1766664521172ab55e6106af619',
+        style: { width: '400px' }
+      },
+      {
+        id: '2-2',
+        type: 'image',
+        content: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F3%2F38%2FMexican_Train.jpg%2F660px-Mexican_Train.jpg&f=1&nofb=1&ipt=ad076fa6ee1a071377502a1ca4ebde0894f7b3e87c29f652683bf20c1e9e1d62',
+        style: { width: '400px' }
+      }
+    ]
   },
   {
     id: '3',
     type: 'content',
     title: 'Mexican Train',
-    content: `
-      <div class='flex flex-row justify-center' style='gap: 2em'>
-        <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi2.wp.com%2Fwww.glowingeyegames.com%2Fwp-content%2Fuploads%2F2018%2F07%2FMTDC-iPad-shot01.jpeg&f=1&nofb=1&ipt=3c157f620b28feb4fbbc58680501038080c19e93689dcd216af2c2ed4a98be34" alt="The rule for us" width="30%" />
-      </div>
-    `
+    layout: {
+      direction: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '2rem'
+    },
+    elements: [
+      {
+        id: '3-1',
+        type: 'image',
+        content: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi2.wp.com%2Fwww.glowingeyegames.com%2Fwp-content%2Fuploads%2F2018%2F07%2FMTDC-iPad-shot01.jpeg&f=1&nofb=1&ipt=3c157f620b28feb4fbbc58680501038080c19e93689dcd216af2c2ed4a98be34',
+        style: { width: '500px' }
+      }
+    ]
   },
   {
     id: '4',
@@ -85,11 +126,26 @@ int main() {
     id: '6',
     type: 'content',
     title: 'Our Problem - Finding the longest train',
-    content: `
-      <p>Input: A list of dominos.</p>
-      <p>Output: The dominos of our longest train, in order.</p>
-      <pre lang='cpp'>Vector<Domino> calculateLongestTrain(Vector<Domino>& tiles, Domino starter);</pre>
-    `
+    layout: {
+      direction: 'column',
+      alignItems: 'flex-start',
+      justifyContent: 'center',
+      gap: '1rem'
+    },
+    elements: [
+      {
+        id: '6-1',
+        type: 'text',
+        content: 'Input: A list of dominos.\nOutput: The dominos of our longest train, in order.',
+        style: { fontSize: '24px' }
+      },
+      {
+        id: '6-2',
+        type: 'text',
+        content: 'Vector<Domino> calculateLongestTrain(Vector<Domino>& tiles, Domino starter);',
+        style: { fontFamily: 'monospace', fontSize: '19px', backgroundColor: 'rgba(0,0,0,0.3)', padding: '10px', borderRadius: '4px' }
+      }
+    ]
   },
   {
     id: '7',
@@ -134,14 +190,27 @@ Vector<Domino> calculateLongestTrain(Vector<Domino>& tiles, Domino starter) {
     id: '8',
     type: 'content',
     title: 'Why?',
-    content: `
-      <p>This was the first recursion problem I solved...</p>
-      <p>I solved it in 6th grade...</p>
-      <p>But I didn't use recursion...</p>
-      <p>I used 15 nested loops.</p>
-      <p>106B students should know better!</p>
-      <p>BONUS: This will lead well into the Puzzle problem. Very similar with question: "What are all of the options we can consider next?"</p>
-    `
+    layout: {
+      direction: 'column',
+      alignItems: 'flex-start',
+      justifyContent: 'flex-start',
+      gap: '1rem'
+    },
+    elements: [
+      {
+        id: '8-1',
+        type: 'list',
+        items: [
+          'This was the first recursion problem I solved...',
+          'I solved it in 6th grade...',
+          'But I didn\'t use recursion...',
+          'I used 15 nested loops.',
+          '106B students should know better!',
+          'BONUS: This will lead well into the Puzzle problem. Very similar with question: "What are all of the options we can consider next?"'
+        ],
+        style: { fontSize: '24px' }
+      }
+    ]
   },
   {
     id: '9',
@@ -152,12 +221,46 @@ Vector<Domino> calculateLongestTrain(Vector<Domino>& tiles, Domino starter) {
     id: '10',
     type: 'content',
     title: 'Questions?',
-    content: '<p class="text-2xl">What questions do you have?</p>'
+    layout: {
+      direction: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '1rem'
+    },
+    elements: [
+      {
+        id: '10-1',
+        type: 'text',
+        content: 'What questions do you have?',
+        style: { fontSize: '32px' }
+      }
+    ]
   }
 ];
 
+const countSteps = (slide) => {
+  if (!slide) return 0;
+  if (slide.type === 'content') {
+    if (slide.elements) {
+      let count = 0;
+      slide.elements.forEach(el => {
+        if (el.type === 'list' && Array.isArray(el.items)) {
+          count += el.items.length;
+        }
+      });
+      return count;
+    }
+    if (typeof slide.content === 'string') {
+      const matches = slide.content.match(/<li/g);
+      return matches ? matches.length : 0;
+    }
+  }
+  return 0;
+};
+
 function App() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [currentStep, setCurrentStep] = useState(0);
   const [slides, setSlides] = useState([]);
   const [codeState, setCodeState] = useState({});
   const [whiteboardState, setWhiteboardState] = useState({
@@ -167,7 +270,7 @@ function App() {
 
   // Initialize slides from localStorage or default
   useEffect(() => {
-    const savedSlides = localStorage.getItem('sling-slides-data');
+    const savedSlides = localStorage.getItem('sling-slides-data-v2');
     if (savedSlides) {
       try {
         setSlides(JSON.parse(savedSlides));
@@ -182,7 +285,7 @@ function App() {
 
   const saveSlides = (newSlides) => {
     setSlides(newSlides);
-    localStorage.setItem('sling-slides-data', JSON.stringify(newSlides));
+    localStorage.setItem('sling-slides-data-v2', JSON.stringify(newSlides));
     // Reset current slide if it goes out of bounds
     if (currentSlide >= newSlides.length) {
       setCurrentSlide(Math.max(0, newSlides.length - 1));
@@ -196,12 +299,17 @@ function App() {
       switch (type) {
         case 'slideChange':
           setCurrentSlide(payload);
+          setCurrentStep(0);
+          break;
+        case 'stepChange':
+          setCurrentStep(payload);
           break;
         case 'requestSync':
           bc.postMessage({
             type: 'doSync',
             payload: {
               currentSlide: currentSlide,
+              currentStep: currentStep,
               codeState: codeState,
               whiteboardState: whiteboardState,
             },
@@ -211,6 +319,7 @@ function App() {
         case 'doSync':
           if (event.data.senderId !== bc.name) { 
             setCurrentSlide(payload.currentSlide);
+            setCurrentStep(payload.currentStep || 0);
             setCodeState(payload.codeState || {});
             setWhiteboardState(payload.whiteboardState || { backgroundColor: '#ffffff', drawings: [] });
           }
@@ -241,11 +350,34 @@ function App() {
     return () => {
       bc.onmessage = null;
     };
-  }, [currentSlide, codeState, whiteboardState]);
+  }, [currentSlide, currentStep, codeState, whiteboardState]);
 
   const handleSlideChange = (index) => {
     setCurrentSlide(index);
+    setCurrentStep(0);
     bc.postMessage({ type: 'slideChange', payload: index });
+  };
+
+  const goToNext = () => {
+    const slide = slides[currentSlide];
+    const steps = countSteps(slide);
+    if (currentStep < steps) {
+      const nextStep = currentStep + 1;
+      setCurrentStep(nextStep);
+      bc.postMessage({ type: 'stepChange', payload: nextStep });
+    } else if (currentSlide < slides.length - 1) {
+      handleSlideChange(currentSlide + 1);
+    }
+  };
+
+  const goToPrev = () => {
+    if (currentStep > 0) {
+      const prevStep = currentStep - 1;
+      setCurrentStep(prevStep);
+      bc.postMessage({ type: 'stepChange', payload: prevStep });
+    } else if (currentSlide > 0) {
+      handleSlideChange(currentSlide - 1);
+    }
   };
 
   const PresenterLayout = () => {
@@ -262,9 +394,9 @@ function App() {
             
             <div className="flex items-center justify-between w-1/2">
               <button
-                onClick={() => handleSlideChange(Math.max(0, currentSlide - 1))}
+                onClick={goToPrev}
                 className="px-4 py-2 bg-surface border border-border rounded-md text-sm font-medium text-text-secondary hover:text-text hover:border-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={currentSlide === 0}
+                disabled={currentSlide === 0 && currentStep === 0}
               >
                 Previous
               </button>
@@ -277,8 +409,8 @@ function App() {
               </div>
 
               <button
-                onClick={() => handleSlideChange(Math.min(slides.length - 1, currentSlide + 1))}
-                disabled={currentSlide === slides.length - 1}
+                onClick={goToNext}
+                disabled={currentSlide === slides.length - 1 && currentStep >= countSteps(slides[currentSlide])}
                 className="px-4 py-2 bg-surface border border-border rounded-md text-sm font-medium text-secondary hover:text-default hover:border-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Next
@@ -306,10 +438,12 @@ function App() {
             <PresenterView
               slides={slides}
               currentSlide={currentSlide}
-              onSlideChange={handleSlideChange}
+              onNext={goToNext}
+              onPrev={goToPrev}
               channel={bc}
               codeState={codeState}
               whiteboardState={whiteboardState}
+              currentStep={currentStep}
             />
           </div>
         </main>
@@ -335,6 +469,7 @@ function App() {
             channel={bc}
             codeState={codeState}
             whiteboardState={whiteboardState}
+            currentStep={currentStep}
             key={currentSlide}
           />
         ) : (

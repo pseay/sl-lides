@@ -84,7 +84,8 @@ export const SlideEditor = ({ slides, setSlides, onSave }) => {
     const newElement = {
         id: crypto.randomUUID(),
         type,
-        content: type === 'text' ? 'New Text Block' : 'https://via.placeholder.com/150',
+        content: type === 'text' ? 'New Text Block' : (type === 'image' ? 'https://via.placeholder.com/150' : undefined),
+        items: type === 'list' ? ['Item 1', 'Item 2', 'Item 3'] : undefined,
         style: {
             fontSize: '16px',
             color: '#FFFFFF',
@@ -246,6 +247,19 @@ export const SlideEditor = ({ slides, setSlides, onSave }) => {
                                            <h4 className="text-xs font-bold text-text-secondary uppercase mb-2">Layout</h4>
                                            <div className="space-y-4">
                                                <div>
+                                                   <label className="block text-xs font-medium text-text-secondary mb-1">Direction</label>
+                                                   <div className="flex mt-1">
+                                                       <button 
+                                                           className={`flex-1 text-xs py-1 border border-r-0 rounded-l ${currentLayout.direction === 'row' ? 'bg-blue-900 border-blue-700 text-blue-100' : 'bg-surface border-border text-text'}`}
+                                                           onClick={() => handleUpdateSlideLayout('direction', 'row')}
+                                                       >Row</button>
+                                                       <button 
+                                                           className={`flex-1 text-xs py-1 border rounded-r ${currentLayout.direction === 'column' ? 'bg-blue-900 border-blue-700 text-blue-100' : 'bg-surface border-border text-text'}`}
+                                                           onClick={() => handleUpdateSlideLayout('direction', 'column')}
+                                                       >Column</button>
+                                                   </div>
+                                               </div>
+                                               <div>
                                                    <label className="block text-xs font-medium text-text-secondary mb-1">Vertical Alignment</label>
                                                    <div className="flex mt-1">
                                                        <button 
@@ -277,12 +291,15 @@ export const SlideEditor = ({ slides, setSlides, onSave }) => {
                                        {/* Element List & Add */}
                                        <div>
                                             <h4 className="text-xs font-bold text-text-secondary uppercase mb-2">Elements</h4>
-                                            <div className="grid grid-cols-2 gap-2 mb-3">
+                                            <div className="grid grid-cols-3 gap-2 mb-3">
                                                 <button onClick={() => handleAddElement('text')} className="p-2 bg-gray-700 hover:bg-gray-600 rounded text-xs font-medium text-center text-text">
                                                     + Text
                                                 </button>
                                                 <button onClick={() => handleAddElement('image')} className="p-2 bg-gray-700 hover:bg-gray-600 rounded text-xs font-medium text-center text-text">
                                                     + Image
+                                                </button>
+                                                <button onClick={() => handleAddElement('list')} className="p-2 bg-gray-700 hover:bg-gray-600 rounded text-xs font-medium text-center text-text">
+                                                    + List
                                                 </button>
                                             </div>
 
@@ -321,25 +338,68 @@ export const SlideEditor = ({ slides, setSlides, onSave }) => {
                                                    <h4 className="font-medium text-blue-400 text-sm">Element Settings</h4>
                                                </div>
                                                
-                                               <div>
-                                                   <label className="block text-xs font-medium text-text-secondary mb-1">Content</label>
-                                                   {selectedElement.type === 'text' ? (
+                                               {selectedElement.type === 'text' && (
+                                                   <div>
+                                                       <label className="block text-xs font-medium text-text-secondary mb-1">Content</label>
                                                        <textarea 
                                                             value={selectedElement.content}
                                                             onChange={(e) => handleUpdateElement(selectedElement.id, { content: e.target.value })}
                                                             className="w-full p-2 text-sm border border-border bg-background text-text rounded"
                                                             rows={5}
                                                        />
-                                                   ) : (
+                                                   </div>
+                                               )}
+
+                                               {selectedElement.type === 'image' && (
+                                                   <div>
+                                                       <label className="block text-xs font-medium text-text-secondary mb-1">Image URL</label>
                                                        <input 
                                                             type="text"
                                                             value={selectedElement.content}
                                                             onChange={(e) => handleUpdateElement(selectedElement.id, { content: e.target.value })}
                                                             className="w-full p-2 text-sm border border-border bg-background text-text rounded"
-                                                            placeholder="Image URL"
+                                                            placeholder="https://..."
                                                        />
-                                                   )}
-                                               </div>
+                                                   </div>
+                                               )}
+
+                                               {selectedElement.type === 'list' && (
+                                                   <div>
+                                                       <label className="block text-xs font-medium text-text-secondary mb-1">List Items</label>
+                                                       <div className="space-y-2">
+                                                            {selectedElement.items?.map((item, i) => (
+                                                                <div key={i} className="flex gap-1">
+                                                                    <input 
+                                                                        type="text" 
+                                                                        value={item}
+                                                                        onChange={(e) => {
+                                                                            const newItems = [...selectedElement.items];
+                                                                            newItems[i] = e.target.value;
+                                                                            handleUpdateElement(selectedElement.id, { items: newItems });
+                                                                        }}
+                                                                        className="flex-grow p-1 text-sm border border-border bg-background text-text rounded"
+                                                                    />
+                                                                    <button 
+                                                                        onClick={() => {
+                                                                            const newItems = selectedElement.items.filter((_, idx) => idx !== i);
+                                                                            handleUpdateElement(selectedElement.id, { items: newItems });
+                                                                        }}
+                                                                        className="text-red-400 hover:text-red-600 px-1"
+                                                                    >×</button>
+                                                                </div>
+                                                            ))}
+                                                            <button 
+                                                                onClick={() => {
+                                                                    const newItems = [...(selectedElement.items || []), 'New Item'];
+                                                                    handleUpdateElement(selectedElement.id, { items: newItems });
+                                                                }}
+                                                                className="w-full py-1 text-xs bg-gray-700 hover:bg-gray-600 rounded text-text"
+                                                            >
+                                                                + Add Item
+                                                            </button>
+                                                       </div>
+                                                   </div>
+                                               )}
 
                                                 <div>
                                                     <label className="block text-xs font-medium text-text-secondary mb-1">Font Size (px)</label>
@@ -472,6 +532,13 @@ export const SlideEditor = ({ slides, setSlides, onSave }) => {
                                                 >
                                                     {el.type === 'text' && (
                                                         <div style={{ whiteSpace: 'pre-wrap' }}>{el.content}</div>
+                                                    )}
+                                                    {el.type === 'list' && (
+                                                        <ul className="list-disc list-inside space-y-2 text-left" style={{ fontSize: el.style?.fontSize || 'inherit', color: el.style?.color || 'inherit' }}>
+                                                            {el.items && el.items.map((item, i) => (
+                                                                <li key={i}>{item}</li>
+                                                            ))}
+                                                        </ul>
                                                     )}
                                                     {el.type === 'image' && (
                                                         <img src={el.content} alt="slide element" style={{maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', ...el.style}} />
